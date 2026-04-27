@@ -6,73 +6,87 @@
 <title>RELAX NAS TRAVELS</title>
 
 <style>
-body {margin:0;font-family:Poppins;background:#000;color:#fff;}
+body {margin:0;background:#000;color:#fff;font-family:Poppins;}
+h1,h2{text-align:center;color:#D4AF37;}
 
-.header {
-  height:100vh;
-  background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
-  url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') no-repeat center/cover;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+.header{
+height:100vh;
+background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') center/cover;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
 }
 
-.header h1 {color:#D4AF37;font-size:50px;}
-
-.btn {
-  background:#D4AF37;color:#000;padding:12px 25px;text-decoration:none;
-  border-radius:25px;cursor:pointer;border:none;
+.btn{
+background:#D4AF37;color:#000;padding:12px 25px;border:none;
+border-radius:25px;cursor:pointer;
 }
 
-.section {padding:70px;text-align:center;}
+.section{padding:60px;text-align:center;}
 
-.features {display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
+.features{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
 
-.box {
-  background:#111;padding:20px;border-radius:10px;cursor:pointer;
+.box{
+background:#111;padding:20px;border-radius:10px;cursor:pointer;
+transition:0.3s;
+}
+.box:hover{box-shadow:0 0 20px gold;}
+
+.seat-layout{
+display:grid;
+grid-template-columns:repeat(4,50px);
+gap:10px;
+justify-content:center;
+margin-top:20px;
 }
 
-.seats {display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px;}
+.seat{
+width:50px;height:50px;background:#444;border-radius:5px;cursor:pointer;
+}
+.selected{background:#D4AF37;}
 
-.seat {
-  width:40px;height:40px;background:#444;border-radius:5px;cursor:pointer;
+.popup{
+display:none;position:fixed;top:20%;left:50%;
+transform:translateX(-50%);
+background:#111;padding:20px;border-radius:10px;
 }
 
-.selected {background:#D4AF37;}
-
-.popup {
-  display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);
-  background:#111;padding:20px;border-radius:10px;
-}
 </style>
 
 <script>
-let price = 800;
-let serviceCharge = 50;
+let price=850;
+let service=50;
 
 function showSeats(){
-  document.getElementById("seatSection").style.display="block";
+document.getElementById("booking").style.display="block";
 }
 
 function toggleSeat(el){
-  el.classList.toggle("selected");
-  updateTotal();
+el.classList.toggle("selected");
+updateTotal();
 }
 
 function updateTotal(){
-  let selected = document.querySelectorAll(".selected").length;
-  let total = (selected * price) + serviceCharge;
-  document.getElementById("total").innerText = "Total: " + total + " BDT";
+let count=document.querySelectorAll(".selected").length;
+let total=(count*price)+service;
+document.getElementById("total").innerText="Total: "+total+" BDT";
 }
 
-function bookNow(){
-  let seats = document.querySelectorAll(".selected").length;
-  let total = (seats * price) + serviceCharge;
+function book(){
+let count=document.querySelectorAll(".selected").length;
+let total=(count*price)+service;
 
-  let msg = "Booking RELAX Bus\nSeats: "+seats+"\nTotal: "+total+" BDT";
-  window.open("https://wa.me/8801XXXXXXXXX?text="+encodeURIComponent(msg));
+let msg="RELAX Booking\nSeats:"+count+"\nTotal:"+total+" BDT";
+window.open("https://wa.me/8801928294511?text="+encodeURIComponent(Hello_Sir));
 }
 
-function showFeature(name){
-  alert(name);
+function showFeature(name,img){
+document.getElementById("popup").style.display="block";
+document.getElementById("popupContent").innerHTML=
+"<h2>"+name+"</h2><img src='"+img+"' width='300'>";
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
 }
 </script>
 
@@ -81,54 +95,62 @@ function showFeature(name){
 <body>
 
 <div class="header">
-  <h1>RELAX</h1>
-  <p>Travel in Comfort & Luxury</p>
-  <button class="btn" onclick="showSeats()">Book Now</button>
+<h1>RELAX</h1>
+<p>Premium Bus Service</p>
+<button class="btn" onclick="showSeats()">Book Now</button>
 </div>
 
 <div class="section">
 <h2>About Us</h2>
-<p>RELAX is a premium bus service by NAS GROUP OF COMPANIES.</p>
+<p>RELAX by NAS GROUP OF COMPANIES offers luxury travel.</p>
 </div>
 
 <div class="section">
 <h2>Features</h2>
+
 <div class="features">
-<div class="box" onclick="showFeature('Full AC System')">❄️ Full AC</div>
-<div class="box" onclick="showFeature('Luxury Seats')">💺 Seats</div>
-<div class="box" onclick="showFeature('Sleeper Beds')">🛏️ Sleeper</div>
-</div>
+<div class="box" onclick="showFeature('Full AC System','https://images.unsplash.com/photo-1581093458791-9d42a1b6d92b')">❄️ AC</div>
+<div class="box" onclick="showFeature('Luxury Seats','https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2')">💺 Seats</div>
+<div class="box" onclick="showFeature('Sleeper','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2')">🛏️ Sleeper</div>
 </div>
 
-<div class="section" id="seatSection" style="display:none;">
+</div>
+
+<div class="section" id="booking" style="display:none;">
 <h2>Select Seats</h2>
 
-<div class="seats">
+<div class="seat-layout">
 <script>
-for(let i=1;i<=20;i++){
+for(let i=1;i<=24;i++){
 document.write('<div class="seat" onclick="toggleSeat(this)"></div>');
 }
 </script>
 </div>
 
-<p id="total">Total: 850 BDT</p>
-<br>
-<button class="btn" onclick="bookNow()">Confirm Booking</button>
+<p id="total">Total: 0 BDT</p>
+
+<button class="btn" onclick="book()">Confirm Booking</button>
 </div>
 
 <div class="section">
-<h2>Route & Time</h2>
-<p>Jamalpur → Chattogram (5:00 PM)</p>
-<p>Chattogram → Jamalpur (5:00 PM)</p>
+<h2>Time</h2>
+<p>Jamalpur → 5:00 PM</p>
+<p>Chattogram → 5:00 PM</p>
 </div>
 
 <div class="section">
 <h2>Contact</h2>
 
-<a href="tel:01600120731" class="btn">Call Now</a>
+<a href="tel:01600120731" class="btn">Call</a>
 <br><br>
 <a href="https://wa.me/8801928294511" class="btn">WhatsApp</a>
 
+</div>
+
+<div class="popup" id="popup">
+<div id="popupContent"></div>
+<br>
+<button class="btn" onclick="closePopup()">Close</button>
 </div>
 
 </body>
