@@ -1,69 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RELAX NAS TRAVELS</title>
 
 <style>
 body {
   margin:0;
-  font-family: Arial;
-  background:black;
-  color:white;
+  font-family: 'Poppins', sans-serif;
+  background:#000;
+  color:#fff;
+}
+
+h1,h2 {
+  letter-spacing:1px;
 }
 
 .header {
+  height:100vh;
+  background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+  url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') no-repeat center/cover;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
   text-align:center;
-  padding:120px;
-  background:url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') no-repeat center/cover;
 }
 
 .header h1 {
-  font-size:40px;
+  font-size:50px;
+  color:#D4AF37;
+}
+
+.header p {
+  font-size:20px;
+  margin:15px 0;
 }
 
 .btn {
   background:#D4AF37;
-  color:black;
-  padding:12px 25px;
+  color:#000;
+  padding:14px 30px;
   text-decoration:none;
   font-weight:bold;
+  border-radius:30px;
+  transition:0.3s;
+}
+
+.btn:hover {
+  background:#fff;
 }
 
 .section {
-  padding:60px;
+  padding:80px 20px;
   text-align:center;
 }
 
+.section h2 {
+  color:#D4AF37;
+  margin-bottom:20px;
+}
+
+.features {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
+
+.feature-box {
+  background:#111;
+  padding:25px;
+  width:220px;
+  border-radius:15px;
+  transition:0.3s;
+}
+
+.feature-box:hover {
+  transform:translateY(-10px);
+  box-shadow:0 0 20px rgba(212,175,55,0.5);
+}
+
+.route-box {
+  background:#111;
+  padding:30px;
+  border-radius:15px;
+  display:inline-block;
+}
+
+.footer {
+  background:#111;
+  padding:30px;
+  text-align:center;
+  font-size:14px;
+  color:#aaa;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HERO -->
 <div class="header">
-<h1>RELAX – Premium AC/Non AC Bus Service</h1>
-<p>Travel in Comfort & Luxury with RELAX</p>
-<br>
-<a href="#" class="btn">Book Now</a>
+  <h1>RELAX</h1>
+  <p>Premium AC/Non AC Bus Service</p>
+  <p>Travel in Comfort & Luxury with RELAX</p>
+  <br>
+  <a href="#" class="btn">Book Now</a>
 </div>
 
+<!-- ABOUT -->
 <div class="section">
-<h2>About</h2>
-<p>RELAX is a premium double-decker AC bus service by NAS GROUP OF COMPANIES.</p>
+  <h2>About Us</h2>
+  <p>RELAX is a premium double-decker AC bus service by NAS GROUP OF COMPANIES. We provide luxury chair coach and sleeper services for long journeys.</p>
 </div>
 
+<!-- FEATURES -->
 <div class="section">
-<h2>Features</h2>
-<p>❄️ AC • 💺 Luxury Seats • 🛏️ Sleeper • 🚿 Washroom • 🎵 LED</p>
+  <h2>Our Features</h2>
+  <div class="features">
+    <div class="feature-box">❄️ Full AC System</div>
+    <div class="feature-box">💺 Luxury Seats</div>
+    <div class="feature-box">🛏️ Sleeper Beds</div>
+    <div class="feature-box">🚿 Washroom</div>
+    <div class="feature-box">🎵 LED Lighting</div>
+  </div>
 </div>
 
+<!-- ROUTE -->
 <div class="section">
-<h2>Route</h2>
-<p>Jamalpur → Chattogram</p>
+  <h2>Routes & Timing</h2>
+  <div class="route-box">
+    Jamalpur → Chattogram <br><br>
+    Time: Coming Soon <br>
+    Ticket: Coming Soon
+  </div>
 </div>
 
+<!-- CONTACT -->
 <div class="section">
-<h2>Contact</h2>
-<p>Phone: 01600120731</p>
+  <h2>Contact</h2>
+  <p>Phone: 01XXXXXXXXX</p>
+  <p>WhatsApp: 01XXXXXXXXX</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  © 2026 RELAX | NAS GROUP OF COMPANIES
 </div>
 
 </body>
