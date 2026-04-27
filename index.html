@@ -6,88 +6,186 @@
 <title>RELAX NAS TRAVELS</title>
 
 <style>
-body {margin:0;background:#000;color:#fff;font-family:Poppins;}
-h1,h2{text-align:center;color:#D4AF37;}
+body{margin:0;font-family:Arial;background:#000;color:#fff}
 
+/* HEADER */
 .header{
 height:100vh;
-background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.9)),
 url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') center/cover;
-display:flex;flex-direction:column;justify-content:center;align-items:center;
 }
+.header h1{color:#D4AF37;font-size:50px}
 
+/* BUTTON */
 .btn{
-background:#D4AF37;color:#000;padding:12px 25px;border:none;
-border-radius:25px;cursor:pointer;
+background:#D4AF37;color:#000;padding:12px 25px;
+border:none;border-radius:25px;cursor:pointer;margin:5px;
 }
 
-.section{padding:60px;text-align:center;}
+/* SECTION */
+.section{padding:60px;text-align:center}
 
-.features{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
-
-.box{
-background:#111;padding:20px;border-radius:10px;cursor:pointer;
-transition:0.3s;
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.85);
 }
-.box:hover{box-shadow:0 0 20px gold;}
 
-.seat-layout{
+.modal-box{
+background:#111;
+width:90%;
+max-width:650px;
+margin:50px auto;
+padding:20px;
+border-radius:10px;
+}
+
+/* SEATS */
+.seats{
 display:grid;
-grid-template-columns:repeat(4,50px);
+grid-template-columns:repeat(6,50px);
 gap:10px;
 justify-content:center;
 margin-top:20px;
 }
 
 .seat{
-width:50px;height:50px;background:#444;border-radius:5px;cursor:pointer;
+width:50px;height:50px;
+background:#333;
+display:flex;
+justify-content:center;
+align-items:center;
+cursor:pointer;
+border-radius:5px;
 }
-.selected{background:#D4AF37;}
+.selected{background:#D4AF37;color:#000}
 
-.popup{
-display:none;position:fixed;top:20%;left:50%;
-transform:translateX(-50%);
-background:#111;padding:20px;border-radius:10px;
+/* ADMIN */
+.admin{
+display:none;
+padding:20px;
+background:#111;
 }
 
+.ticket{
+background:#222;
+padding:10px;
+margin:5px;
+border-radius:5px;
+}
 </style>
 
 <script>
-let price=850;
-let service=50;
+let coach="chair";
+let seats=[];
+let price=0;
 
-function showSeats(){
-document.getElementById("booking").style.display="block";
+function openBooking(){
+document.getElementById("modal").style.display="block";
+generateSeats();
 }
 
-function toggleSeat(el){
-el.classList.toggle("selected");
-updateTotal();
+function closeBooking(){
+document.getElementById("modal").style.display="none";
+seats=[];
 }
 
-function updateTotal(){
-let count=document.querySelectorAll(".selected").length;
-let total=(count*price)+service;
-document.getElementById("total").innerText="Total: "+total+" BDT";
+function setCoach(type){
+coach=type;
+seats=[];
+generateSeats();
+updatePrice();
 }
 
-function book(){
-let count=document.querySelectorAll(".selected").length;
-let total=(count*price)+service;
+function generateSeats(){
+let box=document.getElementById("seatBox");
+box.innerHTML="";
 
-let msg="RELAX Booking\nSeats:"+count+"\nTotal:"+total+" BDT";
-window.open("https://wa.me/8801928294511?text="+encodeURIComponent(Hello_Sir));
+let count=(coach=="chair")?24:16;
+
+for(let i=1;i<=count;i++){
+let id=(coach=="chair"?"C":"S")+i;
+
+box.innerHTML+=`
+<div class="seat" onclick="toggleSeat('${id}',this)">
+${id}
+</div>`;
+}
 }
 
-function showFeature(name,img){
-document.getElementById("popup").style.display="block";
-document.getElementById("popupContent").innerHTML=
-"<h2>"+name+"</h2><img src='"+img+"' width='300'>";
+function toggleSeat(id,el){
+if(seats.includes(id)){
+seats=seats.filter(s=>s!==id);
+el.classList.remove("selected");
+}else{
+seats.push(id);
+el.classList.add("selected");
+}
+updatePrice();
 }
 
-function closePopup(){
-document.getElementById("popup").style.display="none";
+function updatePrice(){
+let base=(coach=="chair")?850:1250;
+price=(seats.length*base)+50;
+
+document.getElementById("price").innerText=
+"Seats: "+seats.join(", ")+" | Total: "+price+" BDT";
 }
+
+function confirmBooking(){
+
+let ticket={
+coach:coach,
+seats:seats,
+price:price,
+time:new Date().toLocaleString()
+};
+
+// SAVE (future database hook)
+let all=JSON.parse(localStorage.getItem("bookings")||"[]");
+all.push(ticket);
+localStorage.setItem("bookings",JSON.stringify(all));
+
+// WhatsApp
+let msg="RELAX BOOKING\nCoach:"+coach+"\nSeats:"+seats+"\nTotal:"+price;
+window.open("https://wa.me/8801928294511?text="+encodeURIComponent(msg));
+}
+
+// ADMIN PANEL
+function openAdmin(){
+document.getElementById("admin").style.display="block";
+loadTickets();
+}
+
+function loadTickets(){
+let data=JSON.parse(localStorage.getItem("bookings")||"[]");
+let box=document.getElementById("tickets");
+box.innerHTML="";
+
+data.forEach((t,i)=>{
+box.innerHTML+=`
+<div class="ticket">
+<b>Booking ${i+1}</b><br>
+Coach: ${t.coach}<br>
+Seats: ${t.seats}<br>
+Price: ${t.price}<br>
+Time: ${t.time}
+</div>`;
+});
+}
+
+// PDF (simple demo)
+function downloadPDF(){
+window.print();
+}
+
 </script>
 
 </head>
@@ -97,60 +195,43 @@ document.getElementById("popup").style.display="none";
 <div class="header">
 <h1>RELAX</h1>
 <p>Premium Bus Service</p>
-<button class="btn" onclick="showSeats()">Book Now</button>
+
+<button class="btn" onclick="openBooking()">Book Now</button>
+<button class="btn" onclick="openAdmin()">Admin Panel</button>
 </div>
 
 <div class="section">
 <h2>About Us</h2>
-<p>RELAX by NAS GROUP OF COMPANIES offers luxury travel.</p>
+<p>RELAX by NAS GROUP OF COMPANIES</p>
 </div>
 
-<div class="section">
-<h2>Features</h2>
+<!-- BOOKING -->
+<div class="modal" id="modal">
+<div class="modal-box">
 
-<div class="features">
-<div class="box" onclick="showFeature('Full AC System','https://images.unsplash.com/photo-1581093458791-9d42a1b6d92b')">❄️ AC</div>
-<div class="box" onclick="showFeature('Luxury Seats','https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2')">💺 Seats</div>
-<div class="box" onclick="showFeature('Sleeper','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2')">🛏️ Sleeper</div>
-</div>
+<h2 style="color:#D4AF37">Book Your Seat</h2>
 
-</div>
+<button class="btn" onclick="setCoach('chair')">Chair (850৳)</button>
+<button class="btn" onclick="setCoach('sleeper')">Sleeper (1250৳)</button>
 
-<div class="section" id="booking" style="display:none;">
-<h2>Select Seats</h2>
+<div class="seats" id="seatBox"></div>
 
-<div class="seat-layout">
-<script>
-for(let i=1;i<=24;i++){
-document.write('<div class="seat" onclick="toggleSeat(this)"></div>');
-}
-</script>
-</div>
+<p id="price">Seats: 0 | Total: 0 BDT</p>
 
-<p id="total">Total: 0 BDT</p>
-
-<button class="btn" onclick="book()">Confirm Booking</button>
-</div>
-
-<div class="section">
-<h2>Time</h2>
-<p>Jamalpur → 5:00 PM</p>
-<p>Chattogram → 5:00 PM</p>
-</div>
-
-<div class="section">
-<h2>Contact</h2>
-
-<a href="tel:01600120731" class="btn">Call</a>
-<br><br>
-<a href="https://wa.me/8801928294511" class="btn">WhatsApp</a>
+<button class="btn" onclick="confirmBooking()">Confirm Booking</button>
+<button class="btn" onclick="downloadPDF()">Download Ticket (PDF)</button>
+<button class="btn" onclick="closeBooking()">Close</button>
 
 </div>
+</div>
 
-<div class="popup" id="popup">
-<div id="popupContent"></div>
-<br>
-<button class="btn" onclick="closePopup()">Close</button>
+<!-- ADMIN -->
+<div class="admin" id="admin">
+<h2>Admin Panel</h2>
+
+<div id="tickets"></div>
+
+<button class="btn" onclick="loadTickets()">Refresh</button>
 </div>
 
 </body>
