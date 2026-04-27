@@ -3,187 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RELAX NAS TRAVELS</title>
+<title>RELAX BUS BOOKING</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#000;color:#fff}
+body{margin:0;background:#000;color:#fff;font-family:Arial}
 
 /* HEADER */
 .header{
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.9)),
-url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957') center/cover;
-}
-.header h1{color:#D4AF37;font-size:50px}
-
-/* BUTTON */
-.btn{
-background:#D4AF37;color:#000;padding:12px 25px;
-border:none;border-radius:25px;cursor:pointer;margin:5px;
-}
-
-/* SECTION */
-.section{padding:60px;text-align:center}
-
-/* MODAL */
-.modal{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.85);
-}
-
-.modal-box{
+padding:40px;
+text-align:center;
 background:#111;
+border-bottom:2px solid gold;
+}
+.header h1{color:#D4AF37}
+
+/* BUS CONTAINER */
+.bus{
 width:90%;
-max-width:650px;
-margin:50px auto;
+max-width:700px;
+margin:20px auto;
+background:#111;
+border-radius:20px;
 padding:20px;
-border-radius:10px;
 }
 
-/* SEATS */
-.seats{
+/* DRIVER */
+.driver{
+background:#222;
+padding:10px;
+text-align:center;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+/* SEAT GRID */
+.seat-row{
+display:flex;
+justify-content:space-between;
+margin:5px 0;
+}
+
+.left,.right{
 display:grid;
-grid-template-columns:repeat(6,50px);
-gap:10px;
-justify-content:center;
-margin-top:20px;
+grid-template-columns:repeat(2,50px);
+gap:8px;
 }
 
 .seat{
 width:50px;height:50px;
 background:#333;
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
+border-radius:6px;
 cursor:pointer;
-border-radius:5px;
+font-size:12px;
 }
+
 .selected{background:#D4AF37;color:#000}
 
-/* ADMIN */
-.admin{
-display:none;
-padding:20px;
-background:#111;
+/* SECTION LABEL */
+.section-title{
+text-align:center;
+margin:10px 0;
+color:gold;
 }
 
-.ticket{
-background:#222;
-padding:10px;
+/* INFO */
+.info{
+text-align:center;
+margin:10px;
+}
+
+/* BUTTON */
+.btn{
+background:#D4AF37;
+color:#000;
+padding:10px 20px;
+border:none;
+border-radius:20px;
+cursor:pointer;
 margin:5px;
-border-radius:5px;
 }
 </style>
 
 <script>
-let coach="chair";
-let seats=[];
+
+let selected=[];
 let price=0;
 
-function openBooking(){
-document.getElementById("modal").style.display="block";
-generateSeats();
-}
-
-function closeBooking(){
-document.getElementById("modal").style.display="none";
-seats=[];
-}
-
-function setCoach(type){
-coach=type;
-seats=[];
-generateSeats();
-updatePrice();
-}
-
-function generateSeats(){
-let box=document.getElementById("seatBox");
-box.innerHTML="";
-
-let count=(coach=="chair")?24:16;
-
-for(let i=1;i<=count;i++){
-let id=(coach=="chair"?"C":"S")+i;
-
-box.innerHTML+=`
-<div class="seat" onclick="toggleSeat('${id}',this)">
-${id}
-</div>`;
-}
-}
-
 function toggleSeat(id,el){
-if(seats.includes(id)){
-seats=seats.filter(s=>s!==id);
+if(selected.includes(id)){
+selected=selected.filter(s=>s!==id);
 el.classList.remove("selected");
 }else{
-seats.push(id);
+selected.push(id);
 el.classList.add("selected");
 }
-updatePrice();
-}
-
-function updatePrice(){
-let base=(coach=="chair")?850:1250;
-price=(seats.length*base)+50;
-
-document.getElementById("price").innerText=
-"Seats: "+seats.join(", ")+" | Total: "+price+" BDT";
 }
 
 function confirmBooking(){
 
-let ticket={
-coach:coach,
-seats:seats,
-price:price,
-time:new Date().toLocaleString()
-};
+let date=document.getElementById("date").value;
 
-// SAVE (future database hook)
-let all=JSON.parse(localStorage.getItem("bookings")||"[]");
-all.push(ticket);
-localStorage.setItem("bookings",JSON.stringify(all));
-
-// WhatsApp
-let msg="RELAX BOOKING\nCoach:"+coach+"\nSeats:"+seats+"\nTotal:"+price;
-window.open("https://wa.me/8801928294511?text="+encodeURIComponent(msg));
+if(date==""){
+alert("Select Travel Date");
+return;
 }
 
-// ADMIN PANEL
-function openAdmin(){
-document.getElementById("admin").style.display="block";
-loadTickets();
-}
+let msg=
+"RELAX BUS TICKET\n"+
+"Date: "+date+"\n"+
+"Seats: "+selected.join(", ")+"\n"+
+"Total Seats: "+selected.length;
 
-function loadTickets(){
-let data=JSON.parse(localStorage.getItem("bookings")||"[]");
-let box=document.getElementById("tickets");
-box.innerHTML="";
+let win=window.open("https://wa.me/8801928294511?text="+encodeURIComponent(msg));
 
-data.forEach((t,i)=>{
-box.innerHTML+=`
-<div class="ticket">
-<b>Booking ${i+1}</b><br>
-Coach: ${t.coach}<br>
-Seats: ${t.seats}<br>
-Price: ${t.price}<br>
-Time: ${t.time}
-</div>`;
-});
-}
+// Ticket Download
+let ticket=
+`RELAX BUS TICKET\n
+Date: ${date}\n
+Seats: ${selected.join(", ")}\n
+Bus: RELAX PREMIUM\n
+`;
 
-// PDF (simple demo)
-function downloadPDF(){
-window.print();
+let blob=new Blob([ticket],{type:"text/plain"});
+let url=URL.createObjectURL(blob);
+
+let a=document.createElement("a");
+a.href=url;
+a.download="ticket.txt";
+a.click();
 }
 
 </script>
@@ -193,45 +143,73 @@ window.print();
 <body>
 
 <div class="header">
-<h1>RELAX</h1>
-<p>Premium Bus Service</p>
-
-<button class="btn" onclick="openBooking()">Book Now</button>
-<button class="btn" onclick="openAdmin()">Admin Panel</button>
+<h1>RELAX PREMIUM BUS</h1>
+<p>NAS GROUP OF COMPANIES</p>
 </div>
 
-<div class="section">
-<h2>About Us</h2>
-<p>RELAX by NAS GROUP OF COMPANIES</p>
+<!-- DATE -->
+<div class="info">
+<h3>Select Travel Date</h3>
+<input type="date" id="date">
 </div>
 
-<!-- BOOKING -->
-<div class="modal" id="modal">
-<div class="modal-box">
+<!-- BUS -->
+<div class="bus">
 
-<h2 style="color:#D4AF37">Book Your Seat</h2>
+<div class="driver">🚍 Driver Seat (Front)</div>
 
-<button class="btn" onclick="setCoach('chair')">Chair (850৳)</button>
-<button class="btn" onclick="setCoach('sleeper')">Sleeper (1250৳)</button>
+<h3 class="section-title">🪑 CHAIR COACH</h3>
 
-<div class="seats" id="seatBox"></div>
+<!-- FRONT ENTRY -->
+<div class="seat-row">
 
-<p id="price">Seats: 0 | Total: 0 BDT</p>
-
-<button class="btn" onclick="confirmBooking()">Confirm Booking</button>
-<button class="btn" onclick="downloadPDF()">Download Ticket (PDF)</button>
-<button class="btn" onclick="closeBooking()">Close</button>
-
-</div>
+<div class="left">
+<div class="seat" onclick="toggleSeat('A1',this)">A1</div>
+<div class="seat" onclick="toggleSeat('A2',this)">A2</div>
+<div class="seat" onclick="toggleSeat('A5',this)">A5</div>
+<div class="seat" onclick="toggleSeat('A6',this)">A6</div>
 </div>
 
-<!-- ADMIN -->
-<div class="admin" id="admin">
-<h2>Admin Panel</h2>
+<div class="right">
+<div class="seat" onclick="toggleSeat('A3',this)">A3</div>
+<div class="seat" onclick="toggleSeat('A4',this)">A4</div>
+<div class="seat" onclick="toggleSeat('A7',this)">A7</div>
+<div class="seat" onclick="toggleSeat('A8',this)">A8</div>
+</div>
 
-<div id="tickets"></div>
+</div>
 
-<button class="btn" onclick="loadTickets()">Refresh</button>
+<h3 class="section-title">🛏️ SLEEPER COACH</h3>
+
+<div class="seat-row">
+
+<div class="left">
+<div class="seat" onclick="toggleSeat('S1',this)">S1</div>
+<div class="seat" onclick="toggleSeat('S2',this)">S2</div>
+<div class="seat" onclick="toggleSeat('S3',this)">S3</div>
+<div class="seat" onclick="toggleSeat('S4',this)">S4</div>
+</div>
+
+<div class="right">
+<div class="seat" onclick="toggleSeat('S5',this)">S5</div>
+<div class="seat" onclick="toggleSeat('S6',this)">S6</div>
+<div class="seat" onclick="toggleSeat('S7',this)">S7</div>
+<div class="seat" onclick="toggleSeat('S8',this)">S8</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- INFO -->
+<div class="info">
+<p>Chair: 850 BDT | Sleeper: 1250 BDT</p>
+<p>Service Charge: 50 BDT</p>
+</div>
+
+<!-- BUTTON -->
+<div style="text-align:center">
+<button class="btn" onclick="confirmBooking()">Confirm Booking + Download Ticket</button>
 </div>
 
 </body>
